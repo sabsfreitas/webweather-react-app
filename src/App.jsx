@@ -170,7 +170,7 @@ function App() {
      </Grid>
      </div>
           )}    
-               {forecast && (
+              {forecast && (
                         <div style={{ width: '100%', backgroundColor: 'white' }}>
                             <Chart charData={chart} />
                         </div>
