@@ -1,0 +1,84 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+
+
+.card {
+  background-color: rgb(171, 150, 185) !important;
+
+}
+
+
+.toolbar {
+  background-color: rgb(59, 37, 74);
+}
+
+.app {
+  text-align: center;
+}
+
+.all {
+  margin: 0.2vh;
+  padding: 1vh;
+}
+
+.data {
+  overflow-x: auto;
+  width: 48%;
+  margin-left: 25vw !important;
+}
+
+.container { 
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  padding-left: 12%;
+  padding-right: 12%; 
+  overflow-x: scroll;
+  scrollbar-width: thin;
+}
+
+
+.icon2 {
+  width: 6%;
+}
