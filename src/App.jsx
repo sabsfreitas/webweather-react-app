@@ -1,85 +1,69 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import '@fontsource/inter';
-// Material-UI Components
+import "@fontsource/inter";
 import {
   Card,
   Grid2,
   Typography,
   CardContent,
   AppBar,
-  CssBaseline,
   Toolbar,
   TextField,
   Fab,
-  Box,
+  CircularProgress,
+  Autocomplete,
 } from "@mui/material";
-// Material-UI Icons
+
 import {
   SearchRounded as SearchIcon,
-  South as SouthIcon,
   North as NorthIcon,
+  South as SouthIcon,
   Water as WaterIcon,
 } from "@mui/icons-material";
 
 import "./App.css";
-// import Chart from "./components/Chart";
 
 const api = {
   key: "02e3d77820cfd9ee3e6ca048fb4e10b4",
   base: "https://api.openweathermap.org/data/2.5/",
-  geo: "https://api.openweathermap.org/geo/1.0/",
-  default: "http://api.openweathermap.org/geo/1.0/direct?q=pelotas",
+  geo: "https://api.openweathermap.org/geo/1.0/direct?",
 };
 
 function App() {
   const [query, setQuery] = useState("");
+  const [options, setOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [forecast, setForecast] = useState(null);
-  // const [chart, setChart] = useState({});
 
   useEffect(() => {
-    if (forecast) {
-      axios.post("http://localhost:5000/weather", {
-        city: forecast.city.name,
-        temp: forecast.list[0].main.temp,
-        tempMax: forecast.list[0].main.temp_min,
-        tempMin: forecast.list[0].main.temp_max,
-        humidity: forecast.list[0].main.humidity,
-        feels_like: forecast.list[0].main.feels_like,
-      });
+    if (query.length < 2) {
+      setOptions([]);
+      return;
     }
-  }, [forecast]);
 
-  const buscaLatLon = async () => {
-    try {
-      let res;
-      if (query === "") {
-        res = await axios.get(api.default);
-      } else {
-        res = await axios.get(
-          `${api.geo}direct?q=${query}&limit=1&appid=${api.key}`
-        );
-      }
+    setLoading(true);
+    axios
+      .get(`${api.geo}q=${query}&limit=5&appid=${api.key}`)
+      .then((res) => {
+        const uniqueCities = new Map();
+        res.data.forEach((city) => {
+          const key = `${city.name}, ${city.country}`;
+          if (!uniqueCities.has(key)) {
+            uniqueCities.set(key, city);
+          }
+        });
 
-      if (!res.data || res.data.length === 0) {
-        console.log("Nenhuma cidade encontrada!");
-        return;
-      }
-
-      console.log("Resposta da API:", res.data);
-
-      setQuery("");
-      buscaClima(res.data[0]);
-    } catch (error) {
-      console.error("Erro ao buscar cidade:", error);
-    }
-  };
+        setOptions([...uniqueCities.values()]);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [query]);
 
   function formataData(data) {
     var date = new Date(data * 1000);
-    var hours = date.getHours().toString().padStart(2, "0"); // Garante dois dígitos (ex: 06, 12)
-    var minutes = date.getMinutes().toString().padStart(2, "0"); // Garante dois dígitos (ex: 00, 05)
-  
+    var hours = date.getHours().toString().padStart(2, "0");
+    var minutes = date.getMinutes().toString().padStart(2, "0");
+
     return (
       date.getDate() +
       "/" +
@@ -92,36 +76,15 @@ function App() {
       minutes
     );
   }
-  
 
   const buscaClima = async (searchData) => {
-    if (
-      !searchData ||
-      typeof searchData.lat === "undefined" ||
-      typeof searchData.lon === "undefined"
-    ) {
-      console.error("Erro: dados de latitude/longitude inválidos", searchData);
-      return;
-    }
+    if (!searchData) return;
 
-    const lat = searchData.lat;
-    const lon = searchData.lon;
-
-    let url = `${api.base}forecast?lat=${lat}&lon=${lon}&appid=${api.key}&lang=pt_br&units=metric`;
     try {
-      const forecastFetch = await axios.get(url);
-      setForecast(forecastFetch.data);
-      // setChart({
-      //   labels: forecastFetch.data.list.map((day) => formataData(day.dt)),
-      //   datasets: [
-      //     {
-      //       label: "Temperatura",
-      //       data: forecastFetch.data.list.map((f) => f.main.temp),
-      //       backgroundColor: "purple",
-      //       borderColor: "rgb(171, 150, 185)",
-      //     },
-      //   ],
-      // });
+      const res = await axios.get(
+        `${api.base}forecast?lat=${searchData.lat}&lon=${searchData.lon}&appid=${api.key}&lang=pt_br&units=metric`
+      );
+      setForecast(res.data);
     } catch (error) {
       console.error("Erro ao buscar previsão do tempo:", error);
     }
@@ -129,15 +92,13 @@ function App() {
 
   return (
     <>
-      <header>
-        <AppBar position="fixed" id="toolbar">
-          <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              WebWeather
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </header>
+      <AppBar position="fixed">
+        <Toolbar id="toolbar">
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            WebWeather
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
       <div style={{ marginTop: "100px" }}>
         <main className="app">
@@ -148,93 +109,104 @@ function App() {
             justifyContent="center"
           >
             <Grid2 item>
-              <TextField
-                id="searchBox"
-                onChange={(e) => setQuery(e.target.value)}
-                value={query}
-                variant="outlined"
-                label="Procure uma cidade"
+              <Autocomplete
+                freeSolo
+                options={options}
+                getOptionLabel={(option) => `${option.name}, ${option.country}`}
+                loading={loading}
+                onInputChange={(event, newInputValue) =>
+                  setQuery(newInputValue)
+                }
+                onChange={(event, selectedCity) => buscaClima(selectedCity)}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Procure uma cidade"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <>
+                          {loading ? (
+                            <CircularProgress color="inherit" size={20} />
+                          ) : null}
+                          {params.InputProps.endAdornment}
+                        </>
+                      ),
+                    }}
+                  />
+                )}
               />
-            </Grid2>
-            <Grid2 item>
-              <Fab aria-label="search" size="small" color="secondary" onClick={buscaLatLon}>
-                <SearchIcon />
-              </Fab>
             </Grid2>
           </Grid2>
 
           {forecast && (
             <div>
-              <Typography variant="h5" id="cityName" marginTop={3}>
+              <Typography variant="h5" marginTop={3}>
                 {forecast.city.name}
               </Typography>
-              
 
-              <Grid2 container spacing={2} justifyContent="center" marginTop={5}>
-                {forecast.list.slice(0, 5).map(
-                  (
-                    f,
-                    index
-                  ) => (
-                    <Grid2 item key={index}>
-                      <Card
-                        variant="outlined"
-                        sx={{
-                          width: 180,
-                          padding: 2,
-                          textAlign: "center",
-                          backgroundColor: "rgb(171, 150, 185)",
-                        }}
-                      >
-                        <CardContent>
-                          <Typography variant="subtitle1" fontWeight="bold">
-                            {formataData(f.dt)}
-                          </Typography>
+              <Grid2
+                container
+                spacing={2}
+                justifyContent="center"
+                marginTop={5}
+              >
+                {forecast.list.slice(0, 5).map((f, index) => (
+                  <Grid2 item key={index}>
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        width: 180,
+                        padding: 2,
+                        textAlign: "center",
+                        backgroundColor: "rgb(171, 150, 185)",
+                      }}
+                    >
+                      <CardContent>
+                        {/* Exibir Data e Hora */}
+                        <Typography variant="subtitle1" fontWeight="bold">
+                          {formataData(f.dt)}
+                        </Typography>
 
-                          <img
-                            src={`http://openweathermap.org/img/w/${f.weather[0].icon}.png`}
-                            alt={f.weather[0].description}
-                            width="50"
-                          />
-                          <Typography variant="body2">
-                            {f.weather[0].description}
-                          </Typography>
+                        <img
+                          src={`http://openweathermap.org/img/w/${f.weather[0].icon}.png`}
+                          alt={f.weather[0].description}
+                          width="50"
+                        />
+                        <Typography variant="body2">
+                          {f.weather[0].description}
+                        </Typography>
 
-                          <Typography variant="body2">
-                            <NorthIcon fontSize="small" /> Máx:{" "}
-                            {f.main.temp_max.toFixed()}°
-                          </Typography>
-                          <Typography variant="body2">
-                            <SouthIcon fontSize="small" /> Mín:{" "}
-                            {f.main.temp_min.toFixed()}°
-                          </Typography>
+                        <Typography variant="body2">
+                          <NorthIcon fontSize="small" /> Máx:{" "}
+                          {f.main.temp_max.toFixed()}°
+                        </Typography>
+                        <Typography variant="body2">
+                          <SouthIcon fontSize="small" /> Mín:{" "}
+                          {f.main.temp_min.toFixed()}°
+                        </Typography>
 
-                          <Typography variant="body2">
-                            🌡 Sensação: {f.main.feels_like.toFixed()}°
-                          </Typography>
+                        <Typography variant="body2">
+                          🌡 Sensação: {f.main.feels_like.toFixed()}°
+                        </Typography>
 
-                          <Typography variant="body2">
-                            <WaterIcon fontSize="small" /> Umidade:{" "}
-                            {f.main.humidity}%
-                          </Typography>
+                        <Typography variant="body2">
+                          <WaterIcon fontSize="small" /> Umidade:{" "}
+                          {f.main.humidity}%
+                        </Typography>
 
-                          <Typography variant="body2">
-                            💨 Vento: {f.wind.speed.toFixed(1)} m/s
-                          </Typography>
-                        </CardContent>
-                      </Card>
-                    </Grid2>
-                  )
-                )}
+                        <Typography variant="body2">
+                          💨 Vento: {f.wind.speed.toFixed(1)} m/s
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid2>
+                ))}
               </Grid2>
             </div>
           )}
-
-          {/* {forecast && (
-            <div style={{ width: "100%", backgroundColor: "white" }}>
-              <Chart charData={chart} />
-            </div>
-          )} */}
         </main>
       </div>
     </>
