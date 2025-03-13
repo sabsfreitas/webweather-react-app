@@ -80,16 +80,32 @@ function App() {
 
   const buscaClima = async (searchData) => {
     if (!searchData) return;
-
+  
     try {
       const res = await axios.get(
         `${api.base}forecast?lat=${searchData.lat}&lon=${searchData.lon}&appid=${api.key}&lang=pt_br&units=metric`
       );
+  
       setForecast(res.data);
+  
+      const weatherData = {
+        city: res.data.city.name,
+        temp: res.data.list[0].main.temp,
+        tempMax: res.data.list[0].main.temp_max,
+        tempMin: res.data.list[0].main.temp_min,
+        humidity: res.data.list[0].main.humidity,
+        feels_like: res.data.list[0].main.feels_like,
+      };
+  
+      await axios.post("http://localhost:5000/weather", weatherData);
+  
+      console.log("Dados salvos no MongoDB:", weatherData);
+  
     } catch (error) {
       console.error("Erro ao buscar previsão do tempo:", error);
     }
   };
+  
 
   return (
     <>
