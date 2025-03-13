@@ -25,7 +25,7 @@ import {
 import "./App.css";
 
 const api = {
-  key: "02e3d77820cfd9ee3e6ca048fb4e10b4",
+  key: import.meta.env.VITE_API_KEY,
   base: "https://api.openweathermap.org/data/2.5/",
   geo: "https://api.openweathermap.org/geo/1.0/direct?",
 };
