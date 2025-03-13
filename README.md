@@ -4,6 +4,7 @@ Este projeto é um aplicativo web de previsão do tempo desenvolvido com React e
 Os dados são obtidos através da API OpenWeatherMap.
 
 🚀 Tecnologias utilizadas
+
 Frontend:
 - Vite + React
 - MaterialUI
