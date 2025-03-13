@@ -3,13 +3,12 @@ import axios from "axios";
 import "@fontsource/inter";
 import {
   Card,
-  Grid2,
+  Grid2 as Grid,
   Typography,
   CardContent,
   AppBar,
   Toolbar,
   TextField,
-  Fab,
   CircularProgress,
   Autocomplete,
 } from "@mui/material";
@@ -60,9 +59,9 @@ function App() {
   }, [query]);
 
   function formataData(data) {
-    var date = new Date(data * 1000);
-    var hours = date.getHours().toString().padStart(2, "0");
-    var minutes = date.getMinutes().toString().padStart(2, "0");
+    let date = new Date(data * 1000);
+    let hours = date.getHours().toString().padStart(2, "0");
+    let minutes = date.getMinutes().toString().padStart(2, "0");
 
     return (
       date.getDate() +
@@ -102,13 +101,13 @@ function App() {
 
       <div style={{ marginTop: "100px" }}>
         <main className="app">
-          <Grid2
+          <Grid
             container
             spacing={1}
             alignItems="center"
             justifyContent="center"
           >
-            <Grid2 item>
+            <Grid item>
               <Autocomplete
                 freeSolo
                 options={options}
@@ -126,35 +125,35 @@ function App() {
                     variant="outlined"
                     InputProps={{
                       ...params.InputProps,
-                      endAdornment: (
+                      end: (
                         <>
                           {loading ? (
                             <CircularProgress color="inherit" size={20} />
                           ) : null}
-                          {params.InputProps.endAdornment}
+                          {params.InputProps.end}
                         </>
                       ),
                     }}
                   />
                 )}
               />
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
 
           {forecast && (
             <div>
               <Typography variant="h5" marginTop={3}>
-                {forecast.city.name}
+                {forecast.city.name}, {forecast.city.country}
               </Typography>
 
-              <Grid2
+              <Grid
                 container
                 spacing={2}
                 justifyContent="center"
                 marginTop={5}
               >
                 {forecast.list.slice(0, 5).map((f, index) => (
-                  <Grid2 item key={index}>
+                  <Grid item key={index}>
                     <Card
                       variant="outlined"
                       sx={{
@@ -165,7 +164,6 @@ function App() {
                       }}
                     >
                       <CardContent>
-                        {/* Exibir Data e Hora */}
                         <Typography variant="subtitle1" fontWeight="bold">
                           {formataData(f.dt)}
                         </Typography>
@@ -202,9 +200,9 @@ function App() {
                         </Typography>
                       </CardContent>
                     </Card>
-                  </Grid2>
+                  </Grid>
                 ))}
-              </Grid2>
+              </Grid>
             </div>
           )}
         </main>
