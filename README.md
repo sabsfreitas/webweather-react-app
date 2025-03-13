@@ -15,3 +15,8 @@ Backend:
 - Node.js
 - Express.js
 - MongoDB
+
+💻 Funcionalidades
+- Pesquisa de cidades ao redor do mundo.
+- Exibição de dados detalhados sobre o clima: temperatura, umidade, velocidade do vento e sensação térmica.
+- Armazenamento e gerenciamento de dados de usuários utilizando MongoDB no lado do servidor.
