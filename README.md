@@ -15,6 +15,8 @@ Backend:
 - Node.js
 - Express.js
 - Cors
+- Dotenv
+- Mongoose
 - MongoDB
 
 💻 Funcionalidades
