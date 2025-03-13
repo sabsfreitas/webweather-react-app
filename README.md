@@ -14,6 +14,7 @@ Frontend:
 Backend:
 - Node.js
 - Express.js
+- Cors
 - MongoDB
 
 💻 Funcionalidades
