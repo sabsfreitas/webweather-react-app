@@ -14,10 +14,12 @@ import {
 } from "@mui/material";
 
 import {
+  DeviceThermostat as DeviceThermostatIcon,
   SearchRounded as SearchIcon,
   North as NorthIcon,
   South as SouthIcon,
-  Water as WaterIcon,
+  WaterDrop as WaterIcon,
+  Air as AirIcon,
 } from "@mui/icons-material";
 
 import "./App.css";
@@ -142,16 +144,11 @@ function App() {
 
           {forecast && (
             <div>
-              <Typography variant="h5" marginTop={3}>
+              <Typography variant="h5" marginTop={3} textAlign="center">
                 {forecast.city.name}, {forecast.city.country}
               </Typography>
 
-              <Grid
-                container
-                spacing={2}
-                justifyContent="center"
-                marginTop={5}
-              >
+              <Grid container spacing={3} justifyContent="center" marginTop={5}>
                 {forecast.list.slice(0, 5).map((f, index) => (
                   <Grid item key={index}>
                     <Card
@@ -173,30 +170,75 @@ function App() {
                           alt={f.weather[0].description}
                           width="50"
                         />
-                        <Typography variant="body2">
+                        <Typography variant="body2" fontWeight={2}>
                           {f.weather[0].description}
                         </Typography>
 
-                        <Typography variant="body2">
-                          <NorthIcon fontSize="small" /> Máx:{" "}
-                          {f.main.temp_max.toFixed()}°
-                        </Typography>
-                        <Typography variant="body2">
-                          <SouthIcon fontSize="small" /> Mín:{" "}
-                          {f.main.temp_min.toFixed()}°
-                        </Typography>
+                        <Grid container spacing={3} justifyContent="center" mt={1}>
+                          <Grid item xs={4}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                mb: 1,
+                              }}
+                            >
+                              <NorthIcon fontSize="small" />{" "}
+                              {f.main.temp_max.toFixed()}°
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                mb: 1,
+                              }}
+                            >
+                              <SouthIcon fontSize="small" />{" "}
+                              {f.main.temp_min.toFixed()}°
+                            </Typography>
+                          </Grid>
 
-                        <Typography variant="body2">
-                          🌡 Sensação: {f.main.feels_like.toFixed()}°
-                        </Typography>
+                          <Grid item xs={4}>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                mb: 1,
+                              }}
+                            >
+                              <AirIcon fontSize="small" />{" "}
+                              {f.wind.speed.toFixed(1)} m/s
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "3px",
+                                mb: 1,
+                              }}
+                            >
+                              <WaterIcon fontSize="small" /> {f.main.humidity}%
+                            </Typography>
+                          </Grid>
+                        </Grid>
 
-                        <Typography variant="body2">
-                          <WaterIcon fontSize="small" /> Umidade:{" "}
-                          {f.main.humidity}%
-                        </Typography>
-
-                        <Typography variant="body2">
-                          💨 Vento: {f.wind.speed.toFixed(1)} m/s
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            display: "flex",
+                            gap: "2px",
+                            marginTop: 1,
+                          }}
+                        >
+                          <DeviceThermostatIcon fontSize="small" /> Sensação
+                          térmica: {f.main.feels_like.toFixed()}°
                         </Typography>
                       </CardContent>
                     </Card>
