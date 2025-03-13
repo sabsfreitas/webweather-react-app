@@ -1,12 +1,23 @@
-# React + Vite
+# 🌤 WebWeather App
+Este projeto é um aplicativo web de previsão do tempo desenvolvido com React e MaterialUI onde permite que os usuários pesquisem cidades ao redor do mundo e visualizem informações detalhadas sobre a previsão do tempo, como a temperatura, umidade, velocidade do vento e sensação térmica.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Os dados são obtidos através da API OpenWeatherMap.
 
-Currently, two official plugins are available:
+🚀 Tecnologias utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Frontend:
+- Vite + React
+- MaterialUI
+- Axios
+- OpenWeatherMap API
+  
+Backend:
+- Node.js
+- Express.js
+- Cors
+- MongoDB
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+💻 Funcionalidades
+- Pesquisa de cidades ao redor do mundo.
+- Exibição de dados detalhados sobre o clima: temperatura, umidade, velocidade do vento e sensação térmica.
+- Armazenamento e gerenciamento de dados de usuários utilizando MongoDB no lado do servidor.
